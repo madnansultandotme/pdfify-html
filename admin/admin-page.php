@@ -1,9 +1,11 @@
-// File: admin/admin-page.php
+
 <?php
 function pdfify_html_admin_page() {
     ?>
     <div class="wrap">
         <h1>HTML to PDF Converter</h1>
+        <p>Enter the URL of the webpage you want to convert to PDF:</p>
+        <input type="text" id="pdfify-url" placeholder="https://example.com" />
         <button id="pdfify-convert-button" class="button button-primary">Generate PDF</button>
         <div id="pdf-download-link"></div>
     </div>

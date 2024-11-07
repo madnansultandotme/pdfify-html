@@ -1,22 +1,17 @@
-.wrap {
-    font-family: Arial, sans-serif;
-}
-
-textarea, input[type="text"] {
-    width: 100%;
-    margin: 10px 0;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
 /* File: assets/css/admin-style.css */
 
+#pdfify-url {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 #pdfify-convert-button {
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 #pdf-download-link {
-    margin-top: 10px;
+    margin-top: 15px;
     font-size: 16px;
 }
-

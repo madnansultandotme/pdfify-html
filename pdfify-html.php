@@ -27,45 +27,49 @@ defined('ABSPATH') || exit;
 require_once plugin_dir_path(__FILE__) . 'admin/admin-page.php';
 require_once plugin_dir_path(__FILE__) . 'vendor/autoload.php';
 
-// Enqueue admin styles and scripts
-function pdfify_html_enqueue_admin_assets() {
+// Enqueue assets for both front-end and admin pages
+function pdfify_html_enqueue_assets() {
     wp_enqueue_style('pdfify-html-admin-style', plugin_dir_url(__FILE__) . 'assets/css/admin-style.css');
     wp_enqueue_script('pdfify-html-admin-script', plugin_dir_url(__FILE__) . 'assets/js/admin-script.js', array('jquery'), null, true);
 
-    // Add AJAX URL for JavaScript
+    // Localize script with AJAX URL
     wp_localize_script('pdfify-html-admin-script', 'pdfify_ajax', array('ajax_url' => admin_url('admin-ajax.php')));
 }
-add_action('admin_enqueue_scripts', 'pdfify_html_enqueue_admin_assets');
+add_action('admin_enqueue_scripts', 'pdfify_html_enqueue_assets');
+add_action('wp_enqueue_scripts', 'pdfify_html_enqueue_assets');
 
-// File: pdfify-html.php
+// Register AJAX action
+add_action('wp_ajax_pdfify_convert_url_to_pdf', 'pdfify_convert_url_to_pdf');
 
-use Dompdf\Dompdf;
-use Dompdf\Options;
-
-function pdfify_convert_html_to_pdf() {
-    // Check user permissions
+// HTML to PDF Conversion function
+function pdfify_convert_url_to_pdf() {
     if (!current_user_can('manage_options')) {
         wp_send_json_error(['message' => 'Unauthorized']);
     }
 
-    // Get HTML content
-    $html_content = isset($_POST['html_content']) ? wp_unslash($_POST['html_content']) : '';
+    // Get URL from AJAX request
+    $url = isset($_POST['url']) ? esc_url_raw($_POST['url']) : '';
 
-    if (empty($html_content)) {
-        wp_send_json_error(['message' => 'No content to convert']);
+    if (empty($url)) {
+        wp_send_json_error(['message' => 'No URL provided']);
     }
 
-    // Initialize Dompdf with options
-    $options = new Options();
-    $options->set('isHtml5ParserEnabled', true);
-    $options->set('isRemoteEnabled', true);
+    // Use cURL to fetch HTML content from the provided URL
+    $html_content = file_get_contents($url);
 
-    $dompdf = new Dompdf($options);
+    if (!$html_content) {
+        wp_send_json_error(['message' => 'Could not retrieve HTML content']);
+    }
+
+    // Initialize Dompdf and convert HTML to PDF
+    $options = new \Dompdf\Options();
+    $options->set('isRemoteEnabled', true);
+    $dompdf = new \Dompdf\Dompdf($options);
     $dompdf->loadHtml($html_content);
     $dompdf->setPaper('A4', 'portrait');
     $dompdf->render();
 
-    // Save the PDF file to uploads directory
+    // Save the PDF to the uploads directory
     $upload_dir = wp_upload_dir();
     $pdf_path = $upload_dir['path'] . '/pdfify_html_' . time() . '.pdf';
     file_put_contents($pdf_path, $dompdf->output());
@@ -73,6 +77,4 @@ function pdfify_convert_html_to_pdf() {
     $pdf_url = $upload_dir['url'] . '/pdfify_html_' . time() . '.pdf';
     wp_send_json_success(['pdf_url' => $pdf_url]);
 }
-// Register AJAX action
-add_action('wp_ajax_pdfify_convert_html_to_pdf', 'pdfify_convert_html_to_pdf');
 ?>

@@ -1,20 +1,23 @@
-// JavaScript can be added here if needed for form validation or dynamic UI behavior
 // File: assets/js/admin-script.js
 
 jQuery(document).ready(function($) {
     $('#pdfify-convert-button').on('click', function() {
-        // Capture entire page HTML content
-        const htmlContent = document.documentElement.outerHTML;
+        const url = $('#pdfify-url').val().trim();
 
-        // AJAX request to send HTML to server for PDF conversion
+        if (!url) {
+            alert('Please enter a valid URL.');
+            return;
+        }
+
+        // AJAX request to convert HTML to PDF
         $.post(pdfify_ajax.ajax_url, {
-            action: 'pdfify_convert_html_to_pdf',
-            html_content: htmlContent
+            action: 'pdfify_convert_url_to_pdf',
+            url: url
         }, function(response) {
             if (response.success) {
-                $('#pdf-download-link').html(`<a href="${response.data.pdf_url}" download>Click here to download your PDF</a>`);
+                $('#pdf-download-link').html(`<a href="${response.data.pdf_url}" target="_blank" download>Click here to download your PDF</a>`);
             } else {
-                alert('Error generating PDF: ' + response.data.message);
+                alert('Error: ' + response.data.message);
             }
         });
     });
