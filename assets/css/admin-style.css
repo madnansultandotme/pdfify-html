@@ -1,17 +1,82 @@
-/* File: assets/css/admin-style.css */
+/* Admin Page Styling */
+.wrap {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
+/* URL Input Field */
 #pdfify-url {
     width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-#pdfify-convert-button {
-    margin-top: 10px;
-}
-
-#pdf-download-link {
-    margin-top: 15px;
+    padding: 12px;
     font-size: 16px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Generate PDF Button */
+#pdfify-convert-button {
+    display: inline-block;
+    padding: 12px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #0073aa;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#pdfify-convert-button:hover {
+    background-color: #005a87;
+}
+
+/* Download Link */
+#pdf-download-link {
+    margin-top: 20px;
+    font-size: 16px;
+}
+
+#pdf-download-link a {
+    display: inline-block;
+    padding: 10px 15px;
+    background-color: #28a745;
+    color: #fff;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+#pdf-download-link a:hover {
+    background-color: #218838;
+}
+
+/* Loader Styling */
+#pdfify-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    font-size: 20px;
+    color: #0073aa;
+    font-weight: bold;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 480px) {
+    #pdfify-url, #pdfify-convert-button, #pdf-download-link a {
+        font-size: 14px;
+        padding: 10px;
+    }
 }
